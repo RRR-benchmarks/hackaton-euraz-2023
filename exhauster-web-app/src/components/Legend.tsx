@@ -13,67 +13,77 @@ import updateTime = MockApi.updateTime;
 import { DateTime } from "../utils/DateTime";
 type LegendProps = {
   updateTime: number;
-  mode?: ('marks' | 'dangers')[];
+  mode?: ("marks" | "dangers")[];
 };
-const Legend = ({
-  mode = ['marks', 'dangers']
-}: LegendProps) => {
+const Legend = ({ mode = ["marks", "dangers"] }: LegendProps) => {
   const getMsPassed = () => {
     return +new Date() - updateTime;
   };
-  const msPasses = useRef(() => getMsPassed());
+  const msPasses = useRef((() => getMsPassed())());
   useEffect(() => {
-    const id = setInterval(() => msPasses.current = getMsPassed(), 1000);
+    const id = setInterval(() => (msPasses.current = getMsPassed()), 1000);
     return () => clearInterval(id);
   }, [updateTime]);
-  const hours = Math.floor(msPasses.value / 1000 / 60 / 60);
-  const minutes = Math.floor((msPasses.value - hours * 1000 * 60 * 60) / 1000 / 60);
-  const seconds = Math.floor((msPasses.value - hours * 1000 * 60 * 60 - minutes * 1000 * 60) / 1000);
-  return <Row>
-    
-    <WrapFlex1>
-      <div>Данные обновлены {hours && `${hours} час `}{(hours || minutes) && `${minutes} мин `}{(hours || minutes || seconds) && `${seconds} сек `}назад</div>
-    </WrapFlex1>
-    
-    {mode.includes('marks') && <>
-      <Element>
-          <LetterIcon>
+  const hours = Math.floor(msPasses.current / 1000 / 60 / 60);
+  const minutes = Math.floor(
+    (msPasses.current - hours * 1000 * 60 * 60) / 1000 / 60
+  );
+  const seconds = Math.floor(
+    (msPasses.current - hours * 1000 * 60 * 60 - minutes * 1000 * 60) / 1000
+  );
+  return (
+    <Row>
+      <WrapFlex1>
+        <div>
+          Данные обновлены {hours && `${hours} час `}
+          {(hours || minutes) && `${minutes} мин `}
+          {(hours || minutes || seconds) && `${seconds} сек `}назад
+        </div>
+      </WrapFlex1>
+
+      {mode.includes("marks") && (
+        <>
+          <Element>
+            <LetterIcon>
               <Letter>T</Letter>
               <Thermometer />
-          </LetterIcon>
-          <Title>Температура</Title>
-      </Element>
+            </LetterIcon>
+            <Title>Температура</Title>
+          </Element>
 
-      <Element>
-          <LetterIcon>
+          <Element>
+            <LetterIcon>
               <Letter>V</Letter>
               <Radio />
-          </LetterIcon>
-          <Title>Вибрация</Title>
-      </Element>
+            </LetterIcon>
+            <Title>Вибрация</Title>
+          </Element>
 
-      <Element>
-          <LetterIcon>
+          <Element>
+            <LetterIcon>
               <Letter>L</Letter>
               <WaterDrop />
-          </LetterIcon>
-          <Title>Уровень масла</Title>
-      </Element>
-    </>}
-  
-    {mode.includes('dangers') && <>
-      <Element>
-          <YellowSquare />
-          <Title>Предупреждение</Title>
-      </Element>
+            </LetterIcon>
+            <Title>Уровень масла</Title>
+          </Element>
+        </>
+      )}
 
-      <Element>
-          <RedSquare />
-          <Title>Опасность</Title>
-      </Element>
-    </>}
-  
-  </Row>;
+      {mode.includes("dangers") && (
+        <>
+          <Element>
+            <YellowSquare />
+            <Title>Предупреждение</Title>
+          </Element>
+
+          <Element>
+            <RedSquare />
+            <Title>Опасность</Title>
+          </Element>
+        </>
+      )}
+    </Row>
+  );
 };
 export default Legend;
 const Row = styled.section`
@@ -86,7 +96,7 @@ const Row = styled.section`
 const WrapFlex1 = styled.div`
   flex: 1;
   font: 400 13px/129% Roboto;
-  color: #2B2B2A;
+  color: #2b2b2a;
 `;
 const Element = styled.div`
   ${row};
@@ -100,35 +110,35 @@ const LetterIcon = styled.div`
 `;
 const Letter = styled.div`
   font: 400 13px/129% Roboto;
-  color: #2B2B2A;
+  color: #2b2b2a;
 `;
 const Thermometer = styled(ThermometerIc).attrs({
-  mainColor: 'black'
+  mainColor: "black",
 })`
   height: 1em;
 `;
 const Radio = styled(RadioIc).attrs({
-  mainColor: 'black'
+  mainColor: "black",
 })`
   height: 1em;
   margin-left: 2px;
   translate: 0 0.04em;
 `;
 const WaterDrop = styled(WaterDropIc).attrs({
-  mainColor: 'black'
+  mainColor: "black",
 })`
   height: 1em;
 `;
 const YellowSquare = styled.div`
   height: 1em;
   aspect-ratio: 1;
-  background: #F9A823;
+  background: #f9a823;
   border-radius: 2px;
 `;
 const RedSquare = styled(YellowSquare)`
-  background: #E32112;
+  background: #e32112;
 `;
 const Title = styled.div`
   font: 300 13px/129% Roboto;
-  color: #2B2B2A;
+  color: #2b2b2a;
 `;

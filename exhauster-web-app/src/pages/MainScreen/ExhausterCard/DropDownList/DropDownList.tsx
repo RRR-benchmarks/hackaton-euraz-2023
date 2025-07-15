@@ -21,31 +21,64 @@ export namespace DropDownList {
 
     //useEffect(()=>{ isOpened && setTimeout(()=>setIsOpened(false),3000) },[isOpened])
 
-    const hoveredItem = useRef((undefined as undefined | ItemType));
+    const hoveredItem = useRef(undefined as undefined | ItemType);
     useEffect(() => {
-      if (hoveredItem.value) hoveredItem.current = props.items.find(it => it.type === hoveredItem.current.value.type && it.id === hoveredItem.current.value.id);
+      if (hoveredItem.current)
+        hoveredItem.current = props.items.find(
+          (it) =>
+            hoveredItem.current &&
+            it.type === hoveredItem.current.type &&
+            it.id === hoveredItem.current.id
+        );
     }, [props.items]);
     useEffect(() => {
-      if (hoveredItem.value) props.setSelectedBearers([hoveredItem.value]);else props.setSelectedBearers([]);
-    }, [hoveredItem.value]);
-    const setHovered = (item: ItemType, isHovered: boolean, ...message: string[]) => {
+      if (hoveredItem.current) props.setSelectedBearers([hoveredItem.current]);
+      else props.setSelectedBearers([]);
+    }, [hoveredItem.current]);
+
+    // const [hoveredItem, setHoveredItem] = useState(undefined as undefined|ItemType)
+    // useEffect(()=>{
+    //   if (hoveredItem) setHoveredItem(props.items.find(it=>
+    //     it.type===hoveredItem.type && it.id===hoveredItem.id
+    //   ))
+    // },[props.items])
+    // useEffect(()=>{
+    //   if (hoveredItem) props.setSelectedBearers([hoveredItem])
+    //   else props.setSelectedBearers([])
+    // },[hoveredItem])
+
+    const setHovered = (
+      item: ItemType,
+      isHovered: boolean,
+      ...message: string[]
+    ) => {
       //console.log('setHovered', item, isHovered, message[0])
-      if (isHovered) hoveredItem.current = item;else hoveredItem.current = undefined;
+      if (isHovered) hoveredItem.current = item;
+      else hoveredItem.current = undefined;
     };
-    return <View
-    // костыль, которого всё равно мало
-    onMouseLeave={() => hoveredItem.current = undefined}>
-      
-      <TitleFrame onClick={() => setIsOpened(!isOpened)}>
-        <TitleButton>{isOpened ? <ArrowOpened /> : <ArrowClosed />}</TitleButton>
-        <Title>{props.title}</Title>
-      </TitleFrame>
-      
-      {isOpened && <ItemList>
-        {props.items.map(it => <Item.Item key={it.id} item={it} setHovered={setHovered} />)}
-      </ItemList>}
-    
-    </View>;
+    return (
+      <View
+        // костыль, которого всё равно мало
+        onMouseLeave={() => (hoveredItem.current = undefined)}
+      >
+        <TitleFrame onClick={() => setIsOpened(!isOpened)}>
+          <TitleButton>
+            {isOpened ? <ArrowOpened /> : <ArrowClosed />}
+          </TitleButton>
+          <Title>{props.title}</Title>
+        </TitleFrame>
+
+        {isOpened && (
+          <ItemList>
+            {props.items.map((it) => {
+              return (
+                <Item.Item key={it.id} item={it} setHovered={setHovered} />
+              );
+            })}
+          </ItemList>
+        )}
+      </View>
+    );
   }
   const View = styled.section`
     ${col};
@@ -61,25 +94,26 @@ export namespace DropDownList {
   `;
   const TitleButton = styled.button`
     ${resetButton};
-    width: 20px; height: 20px;
+    width: 20px;
+    height: 20px;
     ${center};
-    background: #EFEFEF;
+    background: #efefef;
     border-radius: 3px;
     cursor: pointer;
   `;
   const ArrowClosed = styled(Arrow1Right).attrs({
-    mainColor: '#565655',
-    size: 8
+    mainColor: "#565655",
+    size: 8,
   })``;
   const ArrowOpened = styled(Arrow1Right).attrs({
-    mainColor: '#565655',
-    size: 8
+    mainColor: "#565655",
+    size: 8,
   })`
     rotate: 90deg;
   `;
   const Title = styled.h4`
     font: 500 13px/129% Roboto;
-    color: #2B2B2A;
+    color: #2b2b2a;
   `;
   const ItemList = styled.div`
     align-self: stretch;
